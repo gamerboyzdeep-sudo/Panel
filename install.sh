@@ -3,17 +3,17 @@ set -e
 
 sudo su << 'EOF'
 
-echo "[1/6] Updating system..."
+echo "[1/5] Updating system..."
 apt update -y
 
-echo "[2/6] Installing Docker & Docker Compose..."
+echo "[2/5] Installing Docker & Docker Compose..."
 apt install -y docker.io docker-compose wget
 
-echo "[3/6] Creating docker directory..."
-mkdir -p /dockercomp/win-data
+echo "[3/5] Creating docker directory..."
+mkdir -p /dockercomp
 cd /dockercomp
 
-echo "[4/6] Creating Windows 10 Docker Compose file with Persistent Storage..."
+echo "[4/5] Creating Windows 10 Docker Compose file..."
 cat << 'EOL' > Win10.yml
 services:
   windows:
@@ -35,31 +35,20 @@ services:
       - 8006:8006
       - 3389:3389/tcp
       - 3389:3389/udp
-    volumes:
-      - ./win-data:/data   # ✅ Data save here
     stop_grace_period: 2m
 EOL
 
-echo "[5/6] Enabling auto-restart on reboot..."
-cat << 'EOR' > /etc/systemd/system/windows-docker.service
-[Unit]
-Description=Windows 10 Docker Autostart
-After=docker.service
-Requires=docker.service
-
-[Service]
-WorkingDirectory=/dockercomp
-ExecStart=/usr/bin/docker-compose -f Win10.yml up -d
-ExecStop=/usr/bin/docker-compose -f Win10.yml down
-Restart=always
-
-[Install]
-WantedBy=multi-user.target
-EOR
-
-systemctl enable windows-docker.service
-
-echo "[6/6] Starting Windows 10 Docker..."
+echo "[5/5] Starting Windows 10 Docker..."
 docker-compose -f Win10.yml up -d
 
 EOF
+``` ✅ Done – no questions, no interaction.
+
+---
+
+**Next Step?**  
+Batao ye options chahiye kya:
+1. Auto install **QEMU + KVM** support (faster Windows)?
+2. Auto **RDP + Sound + Copy Paste** enable?
+3. Script ko **curl installer** bana doon? (easy 1 command install)  
+   Example:
