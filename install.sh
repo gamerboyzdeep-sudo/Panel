@@ -43,12 +43,3 @@ docker-compose -f Win10.yml up -d
 
 EOF
 ``` ✅ Done – no questions, no interaction.
-
----
-
-**Next Step?**  
-Batao ye options chahiye kya:
-1. Auto install **QEMU + KVM** support (faster Windows)?
-2. Auto **RDP + Sound + Copy Paste** enable?
-3. Script ko **curl installer** bana doon? (easy 1 command install)  
-   Example:
