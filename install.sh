@@ -1,45 +1,38 @@
 #!/bin/bash
+# Author: Your Name
+# Description: Automatically install Docker and run Windows 10 container via docker-compose
+
+# Stop on error
 set -e
 
-sudo su << 'EOF'
+# Step 1: Update system packages
+echo "Updating system packages..."
+sudo apt update -y
 
-echo "[1/5] Updating system..."
-apt update -y
+# Step 2: Install Docker and docker-compose
+echo "Installing Docker and docker-compose..."
+sudo apt install -y docker.io docker-compose wget
 
-echo "[2/5] Installing Docker & Docker Compose..."
-apt install -y docker.io docker-compose wget
+# Step 3: Check Docker installation
+echo "Checking Docker installation..."
+docker --version
+docker-compose --version
 
-echo "[3/5] Creating docker directory..."
-mkdir -p /dockercomp
-cd /dockercomp
+# Step 4: Create working directory
+WORKDIR="$HOME/dockercomp"
+mkdir -p "$WORKDIR"
+cd "$WORKDIR"
 
-echo "[4/5] Creating Windows 10 Docker Compose file..."
-cat << 'EOL' > Win10.yml
-services:
-  windows:
-    image: dockurr/windows
-    container_name: windows
-    environment:
-      VERSION: "10"
-      USERNAME: "Zuzzyyuu"
-      PASSWORD: "VlqL123"
-      RAM_SIZE: "4G"
-      CPU_CORES: "4"
-      DISK_SIZE: "500G"
-    devices:
-      - /dev/kvm
-      - /dev/net/tun
-    cap_add:
-      - NET_ADMIN
-    ports:
-      - 8006:8006
-      - 3389:3389/tcp
-      - 3389:3389/udp
-    stop_grace_period: 2m
-EOL
+# Step 5: Download docker-compose YAML file
+echo "Downloading Win10VLqL.yml..."
+wget -O Win10VLqL.yml https://raw.githubusercontent.com/VLqL069/Win10/7a57fa82a99c1cf3cfaeed17a629d0856061692e/Win10VLqL.yml
 
-echo "[5/5] Starting Windows 10 Docker..."
-docker-compose -f Win10.yml up -d
+# Step 6: Display the YAML content
+echo "Here is the docker-compose file content:"
+cat Win10VLqL.yml
 
-EOF
-``` ✅ Done – no questions, no interaction.
+# Step 7: Run the container
+echo "Starting Windows 10 container..."
+sudo docker-compose -f Win10VLqL.yml up -d
+
+echo "✅ Windows 10 container started successfully!"
